@@ -25,12 +25,28 @@ builder.Services.AddSingleton<IOpenWeatherService, OpenWeatherService>();
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My Weather API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "My Weather API",
+        Version = "v1",
+        Contact = new OpenApiContact
+        {
+            Name = "Quikler",
+            Email = string.Empty,
+            Url = new Uri("https://github.com/Quikler/ClearSkyForecast"),
+        },
+        License = new OpenApiLicense
+        {
+            Name = "Use under MIT License",
+            Url = new Uri("https://github.com/Quikler/ClearSkyForecast/blob/master/LICENSE"),
+        }
+    });
 });
 
 var app = builder.Build();
 
 app.UseCors(CORS_POLICY);
+
 app.MapControllers().RequireCors(CORS_POLICY);
 
 if (app.Environment.IsDevelopment())
@@ -45,8 +61,8 @@ if (app.Environment.IsDevelopment())
 
 app.Run();
 
-// Environment variables:
-// [LINUX] To be able to access add this lines to your /etc/environment file:
+// To be able to access environment variables:
+// [LINUX] Add this lines to your /etc/environment file:
 // IPINFO__TOKEN=token
 // OPENWEATHER__TOKEN=token
 // [WINDOWS] Open cmd and type:

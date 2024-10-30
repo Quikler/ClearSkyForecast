@@ -24,7 +24,7 @@ public class OpenWeatherService : IOpenWeatherService
         return await response.Content.ReadFromJsonAsync<CurrentWeatherResponse>();
     }
 
-    public async Task<FiveDayThreeHourWheatherResponse> GetFiveDayThreeHourAsync(float latitude, float longitude, string token, int count = 40)
+    public async Task<FiveDayResponse?> GetFiveDayThreeHourAsync(float latitude, float longitude, string token, int count = 40)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(token, nameof(token));
 
@@ -32,6 +32,6 @@ public class OpenWeatherService : IOpenWeatherService
         var apiUrl = $"https://api.openweathermap.org/data/2.5/forecast?lat={latitude}&lon={longitude}&cnt={count}&appid={token}";
         var response = await hc.GetAsync(apiUrl);
 
-        return await response.Content.ReadFromJsonAsync<FiveDayThreeHourWheatherResponse>();
+        return await response.Content.ReadFromJsonAsync<FiveDayResponse>();
     }
 }

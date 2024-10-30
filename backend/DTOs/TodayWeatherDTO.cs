@@ -2,8 +2,8 @@ namespace Backend.DTOs;
 
 public class TodayWeatherDTO
 {
-    public TopBarDTO TopBar { get; set; }
-    public ShortWheatherDTO ShortWheather { get; set; }
-    public TodayForecastDTO[] TodayForecast { get; set; }
-    public DetailedWeatherDTO DetailedWeather { get; set; }
+    public TopBarDTO TopBar { get; set; } = null!;
+    public ShortWheatherDTO ShortWheather { get; set; } = null!;
+    public TodayForecastDTO[] TodayForecast { get; set; } = null!;
+    public DetailedWeatherDTO DetailedWeather { get; set; } = null!;
 }

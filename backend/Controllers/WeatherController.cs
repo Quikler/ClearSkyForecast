@@ -1,5 +1,5 @@
-using System.Numerics;
 using Backend.DTOs;
+using Backend.DTOs.Factories;
 using Backend.JSON.ResponseModels;
 using Backend.Services.Interfaces;
 using Backend.Utils.Extensions;
@@ -50,18 +50,18 @@ public class WeatherController : ControllerBase
     {
         var ip = await _ipInfoService.GetIpAsync(_configuration["IPINFO:TOKEN"]!);
         var weather = await _openWeatherService.GetCurrentAsync(ip.Latitude, ip.Longitude, OpenWeatherToken);
-        var threeDayFiveHour = await _openWeatherService.GetFiveDayThreeHourAsync(ip.Latitude, ip.Longitude, OpenWeatherToken, 8);
+        var threeDayFiveHour = await _openWeatherService.GetFiveDayThreeHourAsync(ip.Latitude, ip.Longitude, OpenWeatherToken, 10);
 
-        var morning = threeDayFiveHour.List.Take(2).ToArray();
-        var afternoon = threeDayFiveHour.List.Take(new Range(2, 4)).ToArray();
-        var evening = threeDayFiveHour.List.Take(new Range(4, 6)).ToArray();
-        var night = threeDayFiveHour.List.TakeLast(2).ToArray();
+        if (ip is null || weather is null || threeDayFiveHour is null) return Problem();
 
-        var todayTemps = threeDayFiveHour.List
+        //var currentTime = DateTimeOffset.FromUnixTimeSeconds(weather.Dt + weather.Timezone).DateTime;
+        var currentTime = DateTimeOffset.FromUnixTimeSeconds(weather.Dt);
+
+        var temps = threeDayFiveHour.List
             .Select(item => item.Main!.Temp)
             .ToArray();
 
-        var currentTime = DateTime.Now;
+        var forecasts = GetTodayForecastsByTimeOfDay(threeDayFiveHour.List, currentTime);
 
         var dto = new TodayWeatherDTO
         {
@@ -71,7 +71,7 @@ public class WeatherController : ControllerBase
                 Country = ip.Country,
                 Region = ip.Region,
                 Latitude = ip.Latitude,
-                Longitude = ip.Longitude, 
+                Longitude = ip.Longitude,
             },
             ShortWheather = new ShortWheatherDTO
             {
@@ -79,72 +79,50 @@ public class WeatherController : ControllerBase
                 Region = ip.Region,
                 CurrentTemp = weather.Main.Temp.EvaluateKelvin(),
                 CloudState = weather.Weather[0].Description,
-                MaxTemp = weather.Main.TempMax.EvaluateKelvin(),
-                MinTemp = weather.Main.TempMin.EvaluateKelvin(),
+                MaxTemp = temps.Max().EvaluateKelvin(),
+                MinTemp = temps.Min().EvaluateKelvin(),
                 Icon = weather.Weather[0].Icon,
+                CurrentTime = currentTime.AddSeconds(weather.Timezone).ToString("yyyy-MM-dd HH:mm"),
             },
-            TodayForecast = [
-                CreateTodayForecastDTO(morning, "Morning"),
-                CreateTodayForecastDTO(afternoon, "Afternoon"),
-                CreateTodayForecastDTO(evening, "Evening"),
-                CreateTodayForecastDTO(night, "Night"),
-                // new TodayForecastDTO
-                // {
-                //     TimeOfDay = currentTime.GetTimeOfDay(),
-                //     Temp = morning.Average(w => w.Main.Temp).EvaluateKelvin(),
-                //     Icon = morning[0].Weather[0].Icon,
-                //     Precipitation = (int)(morning[0].ProbabilityOfPrecipitation * 100),
-                // },
-                // new TodayForecastDTO
-                // {
-                //     TimeOfDay = currentTime.GetTimeOfDay(),
-                //     Temp = afternoon.Average(w => w.Main.Temp).EvaluateKelvin(),
-                //     Icon = afternoon[0].Weather[0].Icon,
-                //     Precipitation = (int)(afternoon[0].ProbabilityOfPrecipitation * 100),
-                // },
-                // new TodayForecastDTO
-                // {
-                //     TimeOfDay = currentTime.GetTimeOfDay(),
-                //     Temp = evening.Average(w => w.Main.Temp).EvaluateKelvin(),
-                //     Icon = evening[0].Weather[0].Icon,
-                //     Precipitation = (int)(evening[0].ProbabilityOfPrecipitation * 100),
-                // },
-                // new TodayForecastDTO
-                // {
-                //     TimeOfDay = currentTime.GetTimeOfDay(),
-                //     Temp = night.Average(w => w.Main.Temp).EvaluateKelvin(),
-                //     Icon = night[0].Weather[0].Icon,
-                //     Precipitation = (int)(night[0].ProbabilityOfPrecipitation * 100),
-                // },
-            ],
+            TodayForecast = TodayForecastFactory.FromForecasts(forecasts),
+            DetailedWeather = new DetailedWeatherDTO
+            {
+                FeelsLike = weather.Main.FeelsLike.EvaluateKelvin(),
+                Sunrise = DateTimeOffset.FromUnixTimeSeconds(weather.Sys.Sunrise + weather.Timezone).ToString("HH:mm"),
+                Sunset = DateTimeOffset.FromUnixTimeSeconds(weather.Sys.Sunset + weather.Timezone).ToString("HH:mm"),
+                MaxTemp = temps.Max().EvaluateKelvin(),
+                MinTemp = temps.Min().EvaluateKelvin(),
+                Humidity = weather.Main.Humidity,
+                Pressure = weather.Main.Pressure,
+                Visibility = weather.Visibility.ToString(),
+                Wind = weather.Wind.Speed,
+            },
         };
 
         return Ok(dto);
     }
 
-    private TodayForecastDTO CreateTodayForecastDTO(WeatherData[] wheatherDatas, string timeOfDay)
+    public static Dictionary<string, FiveDayWeatherData[]> GetTodayForecastsByTimeOfDay(IEnumerable<FiveDayWeatherData> data, DateTimeOffset today)
     {
-        return new TodayForecastDTO
-        {
-            TimeOfDay = timeOfDay,
-            Temp = wheatherDatas.Average(w => w.Main.Temp).EvaluateKelvin(),
-            Icon = wheatherDatas.FirstOrDefault()?.Weather?.FirstOrDefault()?.Icon!,
-            Precipitation = (int)(wheatherDatas.FirstOrDefault()?.ProbabilityOfPrecipitation * 100 ?? 0),
-        };
-    }
+        today = today.Date;
 
-    private IEnumerable<WeatherData> GetForecastForTimeOfDay(List<WeatherData> forecastItems, string timeOfDay)
-    {
-        // Логика фильтрации прогнозов в зависимости от времени суток
-        return forecastItems.Where(f => IsTimeOfDay(f.DateTimeText, timeOfDay));
-    }
-
-    private bool IsTimeOfDay(string dt_txt, string timeOfDay)
-    {
-        var hour = DateTime.Parse(dt_txt).Hour;
-        return (timeOfDay == "Morning" && hour >= 5 && hour < 12) ||
-            (timeOfDay == "Afternoon" && hour >= 12 && hour < 17) ||
-            (timeOfDay == "Evening" && hour >= 17 && hour < 21) ||
-            (timeOfDay == "Night" && (hour >= 21 || hour < 5));
+        return data
+            .Where(w =>
+            {
+                var dateTime = DateTimeOffset.FromUnixTimeSeconds(w.DateTime);
+                return dateTime.DateTime < today.AddDays(1).AddHours(5);
+            })
+            .GroupBy(w =>
+            {
+                var hour = DateTimeOffset.FromUnixTimeSeconds(w.DateTime).Hour;
+                return hour switch
+                {
+                    >= 5 and < 12 => "Morning",
+                    >= 12 and < 17 => "Afternoon",
+                    >= 17 and < 22 => "Evening",
+                    _ => "Night"
+                };
+            })
+            .ToDictionary(g => g.Key, g => g.Select(fdw => fdw).ToArray());
     }
 }
