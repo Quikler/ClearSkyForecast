@@ -18,7 +18,7 @@ public static class TodayForecastFactory
                 TimeOfDay = forecast.Key,
                 Temp = value.Average(fdwd => fdwd.Main.Temp).EvaluateKelvin(),
                 Icon = value[0].Weather[0].Icon,
-                Precipitation = (int)(value[0].ProbabilityOfPrecipitation * 100),
+                Precipitation = value[0].ProbabilityOfPrecipitation.FromPercent(),
                 StartTime = DateTimeOffset.FromUnixTimeSeconds(value.MinBy(fdwd => fdwd.DateTime)!.DateTime).ToString("yyyy-MM-dd HH:mm"),
                 EndTime = DateTimeOffset.FromUnixTimeSeconds(value.MaxBy(fdwd => fdwd.DateTime)!.DateTime).ToString("yyyy-MM-dd HH:mm"),
                 IsCurrent = lastKey == forecast.Key,

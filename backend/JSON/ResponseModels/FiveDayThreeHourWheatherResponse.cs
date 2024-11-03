@@ -57,13 +57,13 @@ public class MainWeather
     public float Temp { get; set; }
 
     [JsonPropertyName("feels_like")]
-    public double FeelsLike { get; set; }
+    public float FeelsLike { get; set; }
 
     [JsonPropertyName("temp_min")]
-    public double TemMin { get; set; }
+    public float TemMin { get; set; }
 
     [JsonPropertyName("temp_max")]
-    public double TemMax { get; set; }
+    public float TemMax { get; set; }
 
     [JsonPropertyName("pressure")]
     public int Pressure { get; set; }
@@ -78,7 +78,7 @@ public class MainWeather
     public int Humidity { get; set; }
 
     [JsonPropertyName("temp_kf")]
-    public double TempKf { get; set; }
+    public float TempKf { get; set; }
 }
 
 public class WeatherCondition

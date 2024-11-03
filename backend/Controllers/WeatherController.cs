@@ -62,7 +62,7 @@ public class WeatherController : ControllerBase
             .Select(item => item.Main!.Temp)
             .ToArray();
 
-        var forecasts = GetTodayForecastsByTimeOfDay(fiveDayThreeHour.List, currentTime);
+        var forecasts = fiveDayThreeHour.List.GetTodayForecastsByTimeOfDay(currentTime);
 
         var dto = new TodayWeatherDTO
         {
@@ -116,24 +116,30 @@ public class WeatherController : ControllerBase
     public async Task<IActionResult> Hourly()
     {
         var ip = await _ipInfoService.GetIpAsync(_configuration["IPINFO:TOKEN"]!);
-        var fiveDayThreeHour = await _openWeatherService.GetFiveDayThreeHourAsync(ip.Latitude, ip.Longitude, OpenWeatherToken, 10);
+        var fiveDayThreeHour = await _openWeatherService.GetFiveDayThreeHourAsync(ip.Latitude, ip.Longitude, OpenWeatherToken);
 
         if (ip is null || fiveDayThreeHour is null) return Problem();
 
-        
-    }
-
-    public static Dictionary<string, FiveDayWeatherData[]> GetTodayForecastsByTimeOfDay(IEnumerable<FiveDayWeatherData> data, DateTimeOffset today)
-    {
-        today = today.Date;
-
-        return data
-            .Where(w =>
+        var dayDictionary = fiveDayThreeHour.List
+            .GroupBy(fdwd => DateTimeOffset.FromUnixTimeSeconds(fdwd.DateTime).ToString("d MMMM"))
+            .ToDictionary(g => g.Key, g => g.Select(fdwd =>
             {
-                var dateTime = DateTimeOffset.FromUnixTimeSeconds(w.DateTime);
-                return dateTime.DateTime < today.AddDays(1).AddHours(5);
-            })
-            .GroupBy(w => DateTimeOffset.FromUnixTimeSeconds(w.DateTime).GetTimeOfDayByHour())
-            .ToDictionary(g => g.Key, g => g.Select(fdw => fdw).ToArray());
+                var dateTime = DateTimeOffset.FromUnixTimeSeconds(fdwd.DateTime);
+                return new ThreeHourWeatherDTO
+                {
+                    Time = dateTime.ToString("HH:mm"),
+                    Temp = fdwd.Main.Temp.EvaluateKelvin(),
+                    Icon = fdwd.Weather[0].Icon,
+                    Precipitation = fdwd.ProbabilityOfPrecipitation.FromPercent(),
+                    FeelsLike = fdwd.Main.FeelsLike.EvaluateKelvin(),
+                    Wind = (int)fdwd.Wind.Speed,
+                    Humidity = fdwd.Main.Humidity,
+                    Clouds = fdwd.Clouds.All,
+                    Visibility = fdwd.Visibility,
+                    Pressure = fdwd.Main.Pressure,
+                };
+            }).ToArray());
+
+        return Ok(dayDictionary);
     }
 }

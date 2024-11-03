@@ -45,3 +45,20 @@ export interface DetailedWeatherDTO {
   city: string;
   country: string;
 }
+
+export interface ThreeHourWeatherDTO {
+  time: string;
+  temp: number;
+  icon: string;
+  precipitation: number;
+  feelsLike: number;
+  wind: number;
+  humidity: number;
+  clouds: number;
+  visibility: number;
+  pressure: number;
+}
+
+export interface DayWeatherDictionaryDTO {
+  dtos: Record<string, ThreeHourWeatherDTO>;
+}
