@@ -1,6 +1,6 @@
 namespace Backend.DTOs;
 
-public class ShortWheatherDTO
+public class ShortWeatherDTO
 {
     public string City { get; set; } = null!;
     public string Region { get; set; } = null!;

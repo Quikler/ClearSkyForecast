@@ -1,4 +1,4 @@
-import { ClearSky, Clouds, FewClouds, Mist, Rain, Snow, SunnyRain, SunPrimaryColor, Thunderstorm } from "../assets/images/weather-icons";
+import { ClearSky, Clouds, FewClouds, Mist, Rain, Snow, SunnyRain, YellowPC, Thunderstorm } from "../components/svgr/weather-icons";
 import { PrimaryColor, Size } from "../interfaces/svg";
 
 const svgComponents: { [key: string]: (props: Size & PrimaryColor) => JSX.Element } = {
@@ -22,8 +22,10 @@ const svgComponents: { [key: string]: (props: Size & PrimaryColor) => JSX.Elemen
   "50d": Mist,
 };
 
-export function getWeatherImageByName(name: string, { width, height }: Size): JSX.Element | undefined {
-  const primaryColor = name.includes("n") ? "black" : SunPrimaryColor;
+export function getOWSVGByName(name: string, { width, height }: Size): JSX.Element | undefined {
+  if (!name) return undefined;
+  
+  const primaryColor = name.includes("n") ? "black" : YellowPC;
   const Component = svgComponents[name];
 
   return Component ? <Component width={width} height={height} primaryColor={primaryColor} /> : undefined;

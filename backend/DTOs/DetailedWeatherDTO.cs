@@ -11,4 +11,6 @@ public class DetailedWeatherDTO
     public float Pressure { get; set; }
     public string Visibility { get; set; } = null!;
     public float Wind { get; set; }
+    public string City { get; set; } = null!;
+    public string Country { get; set; } = null!;
 }

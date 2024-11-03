@@ -1,6 +1,6 @@
 import { Input } from "@chakra-ui/react";
 
-export default function MagnifierInput() {
+export function MagnifierInput() {
   return (
     <>
       <div className='my-3 px-4 py-0 flex justify-between items-center bg-white gap-2'>

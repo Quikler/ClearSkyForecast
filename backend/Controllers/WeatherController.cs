@@ -1,3 +1,4 @@
+using System.Globalization;
 using Backend.DTOs;
 using Backend.DTOs.Factories;
 using Backend.JSON.ResponseModels;
@@ -50,18 +51,18 @@ public class WeatherController : ControllerBase
     {
         var ip = await _ipInfoService.GetIpAsync(_configuration["IPINFO:TOKEN"]!);
         var weather = await _openWeatherService.GetCurrentAsync(ip.Latitude, ip.Longitude, OpenWeatherToken);
-        var threeDayFiveHour = await _openWeatherService.GetFiveDayThreeHourAsync(ip.Latitude, ip.Longitude, OpenWeatherToken, 10);
+        var fiveDayThreeHour = await _openWeatherService.GetFiveDayThreeHourAsync(ip.Latitude, ip.Longitude, OpenWeatherToken, 10);
 
-        if (ip is null || weather is null || threeDayFiveHour is null) return Problem();
+        if (ip is null || weather is null || fiveDayThreeHour is null) return Problem();
 
         //var currentTime = DateTimeOffset.FromUnixTimeSeconds(weather.Dt + weather.Timezone).DateTime;
         var currentTime = DateTimeOffset.FromUnixTimeSeconds(weather.Dt);
 
-        var temps = threeDayFiveHour.List
+        var temps = fiveDayThreeHour.List
             .Select(item => item.Main!.Temp)
             .ToArray();
 
-        var forecasts = GetTodayForecastsByTimeOfDay(threeDayFiveHour.List, currentTime);
+        var forecasts = GetTodayForecastsByTimeOfDay(fiveDayThreeHour.List, currentTime);
 
         var dto = new TodayWeatherDTO
         {
@@ -73,7 +74,7 @@ public class WeatherController : ControllerBase
                 Latitude = ip.Latitude,
                 Longitude = ip.Longitude,
             },
-            ShortWheather = new ShortWheatherDTO
+            ShortWheather = new ShortWeatherDTO
             {
                 City = ip.City,
                 Region = ip.Region,
@@ -96,10 +97,30 @@ public class WeatherController : ControllerBase
                 Pressure = weather.Main.Pressure,
                 Visibility = weather.Visibility.ToString(),
                 Wind = weather.Wind.Speed,
+                City = ip.City,
+                Country = ip.Country,
             },
         };
 
         return Ok(dto);
+    }
+
+    // [HttpGet]
+    // public async Task<IActionResult> FiveDayThreeHour()
+    // {
+    //     var ip = await _ipInfoService.GetIpAsync(_configuration["IPINFO:TOKEN"]!);
+    //     var fiveDayThreeHour = await _openWeatherService.GetFiveDayThreeHourAsync(ip.Latitude, ip.Longitude, OpenWeatherToken);
+    // }
+
+    [HttpGet]
+    public async Task<IActionResult> Hourly()
+    {
+        var ip = await _ipInfoService.GetIpAsync(_configuration["IPINFO:TOKEN"]!);
+        var fiveDayThreeHour = await _openWeatherService.GetFiveDayThreeHourAsync(ip.Latitude, ip.Longitude, OpenWeatherToken, 10);
+
+        if (ip is null || fiveDayThreeHour is null) return Problem();
+
+        
     }
 
     public static Dictionary<string, FiveDayWeatherData[]> GetTodayForecastsByTimeOfDay(IEnumerable<FiveDayWeatherData> data, DateTimeOffset today)
@@ -112,17 +133,7 @@ public class WeatherController : ControllerBase
                 var dateTime = DateTimeOffset.FromUnixTimeSeconds(w.DateTime);
                 return dateTime.DateTime < today.AddDays(1).AddHours(5);
             })
-            .GroupBy(w =>
-            {
-                var hour = DateTimeOffset.FromUnixTimeSeconds(w.DateTime).Hour;
-                return hour switch
-                {
-                    >= 5 and < 12 => "Morning",
-                    >= 12 and < 17 => "Afternoon",
-                    >= 17 and < 22 => "Evening",
-                    _ => "Night"
-                };
-            })
+            .GroupBy(w => DateTimeOffset.FromUnixTimeSeconds(w.DateTime).GetTimeOfDayByHour())
             .ToDictionary(g => g.Key, g => g.Select(fdw => fdw).ToArray());
     }
 }

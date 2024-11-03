@@ -1,3 +1,4 @@
+using Backend.DTOs;
 using Backend.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,8 +22,18 @@ public class LocationController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Coordinates()
+    public async Task<IActionResult> Geolocation()
     {
+        var ip = await _ipInfoService.GetIpAsync(_configuration["IPINFO:TOKEN"]!);
+        return ip is not null ? Ok(new TopBarDTO
+        {
+            City = ip.City,
+            Country = ip.Country,
+            Region = ip.Region,
+            Latitude = ip.Latitude,
+            Longitude = ip.Longitude,
+        }) : Problem();
+
         try
         {
             var data = await _ipInfoService.GetIpAsync(IpInfoToken);

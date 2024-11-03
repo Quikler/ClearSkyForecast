@@ -1,10 +1,10 @@
 import { Flex } from "@chakra-ui/react";
-import MagnifierInput from "./magnifier-input";
-import MenuDropdown from "./menu-dropdown";
+import { MagnifierInput } from "./shared/inputs";
+import { MenuDropdown } from "./shared/dropdowns";
 
 export default function Header() {
   return (
-    <header className='bg-indigo-500'>
+    <header className='bg-indigo-600 border-2 border-indigo-500'>
       <Flex className='lg:container mx-auto gap-2' alignItems='center' justifyContent='space-between'>
         <div>
           <svg fill="#000000" role="img" xmlns="http://www.w3.org/2000/svg" height="48px" width="96px" viewBox="0 0 60 32">
