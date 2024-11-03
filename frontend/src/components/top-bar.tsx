@@ -1,6 +1,6 @@
 import { Text } from "@chakra-ui/react";
 import { TopBarDTO } from "../interfaces/dto";
-import { fiveXlFs, twoXlFs } from "../App";
+import { fiveXlFs, twoXlFs } from "../hooks/breakpoints";
 
 export default function TopBar({ latitude, longitude, city, region, country }: TopBarDTO) {
   return (

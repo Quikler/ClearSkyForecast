@@ -1,6 +1,6 @@
 import { Card, CardBody, CardHeader, Flex, Heading } from "@chakra-ui/react";
 import { WeatherDropdown } from "../shared/dropdowns";
-import { xlFs } from "../../App";
+import { xlFs } from "../../hooks/breakpoints";
 
 export default function ThreeHourlyWeatherCard() {
   return (

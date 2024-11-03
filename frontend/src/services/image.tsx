@@ -1,7 +1,9 @@
+import { SVGProps } from "react";
 import { ClearSky, Clouds, FewClouds, Mist, Rain, Snow, SunnyRain, YellowPC, Thunderstorm } from "../components/svgr/weather-icons";
-import { PrimaryColor, Size } from "../interfaces/svg";
+import { PrimaryColor } from "../interfaces/shared";
 
-const svgComponents: { [key: string]: (props: Size & PrimaryColor) => JSX.Element } = {
+
+const svgComponents: { [key: string]: React.FC<PrimaryColor & SVGProps<SVGSVGElement>> } = {
   "01n": ClearSky,
   "01d": ClearSky,
   "02n": FewClouds,
@@ -22,11 +24,11 @@ const svgComponents: { [key: string]: (props: Size & PrimaryColor) => JSX.Elemen
   "50d": Mist,
 };
 
-export function getOWSVGByName(name: string, { width, height }: Size): JSX.Element | undefined {
+export function getOWSVGByName(name: string, props: SVGProps<SVGSVGElement>): JSX.Element | undefined {
   if (!name) return undefined;
   
   const primaryColor = name.includes("n") ? "black" : YellowPC;
   const Component = svgComponents[name];
 
-  return Component ? <Component width={width} height={height} primaryColor={primaryColor} /> : undefined;
+  return Component ? <Component {...props} primaryColor={primaryColor} /> : undefined;
 }

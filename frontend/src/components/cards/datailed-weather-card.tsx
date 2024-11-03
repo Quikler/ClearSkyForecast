@@ -1,7 +1,7 @@
 import { Card, CardBody, CardHeader, Divider, Flex, Grid, Heading, Text } from "@chakra-ui/react";
 import { Sunset, Sunrise } from "../svgr/weather-icons";
 import { DetailedWeatherDTO } from "../../interfaces/dto";
-import { fiveXlFs, twoXlFs, xlFs } from "../../App";
+import { fiveXlFs, twoXlFs, xlFs } from "../../hooks/breakpoints";
 
 export default function DetailedWeatherCard({
   feelsLike,

@@ -2,7 +2,7 @@ import { Box, Divider, Flex, Grid, Text } from "@chakra-ui/react";
 import { ArrowDown, ArrowUp, WaterDrop } from "../svgr/general-icons";
 import { getOWSVGByName } from "../../services/image";
 import { useState } from "react";
-import { midSvg, smallestSvg, smallSvg } from "../../App";
+import { midSvg, smallestSvg, smallSvg } from "../../hooks/breakpoints";
 import { MenuDropdownProps } from "../../interfaces/shared";
 
 export function MenuDropdown({ items }: MenuDropdownProps) {

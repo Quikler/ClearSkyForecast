@@ -1,7 +1,7 @@
 import { Card, CardBody, CardHeader, Flex, Heading, Text } from "@chakra-ui/react";
 import { ShortWeatherDTO } from "../../interfaces/dto";
 import { getOWSVGByName } from "../../services/image";
-import { bigSvg, fiveXlFs, twoXlFs, xlFs } from "../../App";
+import { bigSvg, fiveXlFs, twoXlFs, xlFs } from "../../hooks/breakpoints";
 
 export default function ShortWeatherCard ({
   city,

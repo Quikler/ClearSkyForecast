@@ -3,7 +3,7 @@ import { WaterDrop } from "../svgr/general-icons";
 import { TodayForecastDTO } from "../../interfaces/dto";
 import React from "react";
 import { getOWSVGByName } from "../../services/image";
-import { xlFs } from "../../App";
+import { xlFs } from "../../hooks/breakpoints";
 
 export default function TodayForecastCard({ forecasts }: { forecasts: TodayForecastDTO[] }) {
   return (
