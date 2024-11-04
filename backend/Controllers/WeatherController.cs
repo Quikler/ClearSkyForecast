@@ -105,23 +105,23 @@ public class WeatherController : ControllerBase
         return Ok(dto);
     }
 
-    // [HttpGet]
-    // public async Task<IActionResult> FiveDayThreeHour()
-    // {
-    //     var ip = await _ipInfoService.GetIpAsync(_configuration["IPINFO:TOKEN"]!);
-    //     var fiveDayThreeHour = await _openWeatherService.GetFiveDayThreeHourAsync(ip.Latitude, ip.Longitude, OpenWeatherToken);
-    // }
-
     [HttpGet]
     public async Task<IActionResult> Hourly()
     {
         var ip = await _ipInfoService.GetIpAsync(_configuration["IPINFO:TOKEN"]!);
-        var fiveDayThreeHour = await _openWeatherService.GetFiveDayThreeHourAsync(ip.Latitude, ip.Longitude, OpenWeatherToken);
+        if (ip is null) 
+        {
+            return Problem("IP address could not be retrieved.");
+        }
 
-        if (ip is null || fiveDayThreeHour is null) return Problem();
+        var weatherData = await _openWeatherService.GetFiveDayThreeHourAsync(ip.Latitude, ip.Longitude, OpenWeatherToken);
+        if (weatherData?.List is null || weatherData.List.Count == 0)
+        {
+            return Problem("Weather data could not be retrieved.");
+        }
 
-        var dayDictionary = fiveDayThreeHour.List
-            .GroupBy(fdwd => DateTimeOffset.FromUnixTimeSeconds(fdwd.DateTime).ToString("d MMMM"))
+        var dayDictionary = weatherData.List
+            .GroupBy(fdwd => DateTimeOffset.FromUnixTimeSeconds(fdwd.DateTime).ToString("dddd, MMMM d"))
             .ToDictionary(g => g.Key, g => g.Select(fdwd =>
             {
                 var dateTime = DateTimeOffset.FromUnixTimeSeconds(fdwd.DateTime);
