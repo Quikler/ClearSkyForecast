@@ -1,3 +1,5 @@
+import ThreeHourlyWeatherCard from "../components/cards/three-hourly-weather-catd";
+
 export interface TodayWeatherDTO {
   topBar: TopBarDTO;
   shortWheather: ShortWeatherDTO;
@@ -57,8 +59,4 @@ export interface ThreeHourWeatherDTO {
   clouds: number;
   visibility: number;
   pressure: number;
-}
-
-export interface DayWeatherDictionaryDTO {
-  dtos: Record<string, ThreeHourWeatherDTO>;
 }

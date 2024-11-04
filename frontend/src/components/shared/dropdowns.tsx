@@ -4,6 +4,7 @@ import { getOWSVGByName } from "../../services/image";
 import { useState } from "react";
 import { midSvg, smallestSvg, smallSvg } from "../../hooks/breakpoints";
 import { MenuDropdownProps } from "../../interfaces/shared";
+import { ThreeHourWeatherDTO } from "../../interfaces/dto";
 
 export function MenuDropdown({ items }: MenuDropdownProps) {
   function onClick() {
@@ -40,7 +41,18 @@ export function MenuDropdown({ items }: MenuDropdownProps) {
   );
 };
 
-export function WeatherDropdown() {
+export function WeatherDropdown({
+  time,
+  temp,
+  icon,
+  precipitation,
+  feelsLike,
+  wind,
+  humidity,
+  clouds,
+  visibility,
+  pressure,
+}: ThreeHourWeatherDTO) {
   const [isExpanded, setIsExpanded] = useState(false);
   
   const onArrowClick = () => setIsExpanded(prev => !prev);
@@ -49,12 +61,12 @@ export function WeatherDropdown() {
     <>
       <Flex px={[2, 3, 6]} borderWidth="1px" borderColor='whiteAlpha.600' justify='space-between'>
         <Grid flexGrow={1} ml={['0', '0', 'clamp(0px, 4vw, 64px)']} mr={2} templateColumns='repeat(4, 1fr)' columnGap='3' justifyItems='start' alignItems='center' rowGap='3'>
-          <Text>9:00</Text>
-          <Text>9°</Text>
-          {getOWSVGByName("10d", { width: midSvg() })}
+          <Text>{time}</Text>
+          <Text>{temp}°</Text>
+          {getOWSVGByName(icon, { width: midSvg() })}
           <Flex gap="1" alignItems='center'>
             <WaterDrop width={smallSvg()} />
-            <Text>10%</Text>
+            <Text>{precipitation}%</Text>
           </Flex>
         </Grid>
         {isExpanded 
@@ -70,7 +82,7 @@ export function WeatherDropdown() {
                 <ArrowDown width='24px' />
                 <div>
                   <Text>Feels like</Text>
-                  <Text>8°</Text>
+                  <Text>{feelsLike}°</Text>
                 </div>
               </Flex>
 
@@ -80,7 +92,7 @@ export function WeatherDropdown() {
                 <ArrowDown width='24px' />
                 <div>
                   <Text>Wind</Text>
-                  <Text>W 27 km/h</Text>
+                  <Text>{wind} km/h</Text>
                 </div>
               </Flex>
 
@@ -90,7 +102,7 @@ export function WeatherDropdown() {
                 <ArrowDown width='24px' />
                 <div>
                   <Text>Humidity</Text>
-                  <Text>55%</Text>
+                  <Text>{humidity}%</Text>
                 </div>
               </Flex>
 
@@ -99,8 +111,8 @@ export function WeatherDropdown() {
               <Flex ml={['0', '0', 'clamp(0px, 4vw, 64px)']} gap={2}>
                 <ArrowDown width='24px' />
                 <div>
-                  <Text>Cloud Cover</Text>
-                  <Text>67%</Text>
+                  <Text>Clouds</Text>
+                  <Text>{clouds}%</Text>
                 </div>
               </Flex>
 
@@ -109,8 +121,8 @@ export function WeatherDropdown() {
               <Flex ml={['0', '0', 'clamp(0px, 4vw, 64px)']} gap={2}>
                 <ArrowDown width='24px' />
                 <div>
-                  <Text>Rain Amount</Text>
-                  <Text>0 mm</Text>
+                  <Text>Visibility</Text>
+                  <Text>{visibility}</Text>
                 </div>
               </Flex>
 
@@ -120,7 +132,7 @@ export function WeatherDropdown() {
                 <ArrowDown width='24px' />
                 <div>
                   <Text>Pressure</Text>
-                  <Text>1025</Text>
+                  <Text>{pressure}</Text>
                 </div>
               </Flex>
               
