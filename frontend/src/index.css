@@ -5,3 +5,7 @@
 /* body {
   font-size: clamp(8px, 2vw, 20px);
 } */
+
+body {
+  background: #e0f7fa;
+}

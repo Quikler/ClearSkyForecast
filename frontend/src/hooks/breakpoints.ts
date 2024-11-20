@@ -5,6 +5,7 @@ export const useFontSizes = () => {
     fiveXlFs: useBreakpointValue({ base: "xl", sm: "3xl", md: "4xl", lg: "5xl" }),
     twoXlFs: useBreakpointValue({ base: "sm", sm: "lg", md: "xl", lg: "2xl" }),
     xlFs: useBreakpointValue({ base: "smaller", sm: "md", md: "lg", lg: "xl" }),
+    lgFs: useBreakpointValue({ base: "12px", sm: "14px", md: "md", lg: "lg" }),
   };
 };
 
