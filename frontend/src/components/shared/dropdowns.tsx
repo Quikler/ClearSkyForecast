@@ -1,11 +1,17 @@
 import { Box, Divider, Flex, Grid, Text } from "@chakra-ui/react";
-import { ArrowDown, ArrowUp, FeelsLike, Pressure, RainEssence, Clouds, WaterDrop, Wind, Visibility } from "../svgr/general-icons";
+import { ArrowDown, ArrowUp } from "../svgr/general-icons";
+import { Visibility } from "../svgr/weather-icons";
+import { Pressure } from "../svgr/weather-icons";
+import { Clouds } from "../svgr/weather-icons";
+import { RainEssence } from "../svgr/weather-icons";
+import { Wind } from "../svgr/weather-icons";
+import { FeelsLike } from "../svgr/weather-icons";
+import { WaterDrop } from "../svgr/weather-icons";
 import { getOWSVGByName } from "../../services/image";
 import { useState } from "react";
 import { useSvgSizes } from "../../hooks/breakpoints";
 import { MenuDropdownProps } from "../../interfaces/shared";
 import { ThreeHourWeatherDTO } from "../../interfaces/dto";
-import { title } from "framer-motion/client";
 
 export function MenuDropdown({ items }: MenuDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +25,7 @@ export function MenuDropdown({ items }: MenuDropdownProps) {
   }
 
   return (
-    <div className="relative inline-block">
+    <div className="inline-block">
       <button className="p-3 focus:outline-none" onClick={toggleMenu}>
         <svg width="25" height="17" viewBox="0 0 25 17" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="25" height="3" fill="white" />
@@ -31,7 +37,7 @@ export function MenuDropdown({ items }: MenuDropdownProps) {
       {isOpen && (
         <div
           onMouseLeave={closeMenu}
-          className="absolute right-0 w-36 bg-white shadow-lg rounded-md ring-1 ring-black ring-opacity-5 z-10 transition ease-in-out duration-200"
+          className="absolute right-0 top-0 w-52 h-screen bg-white shadow-lg ring-1 ring-black ring-opacity-5 z-10 transition ease-in-out duration-200"
         >
           <ul role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
             {items.map((item, index) => (
@@ -68,8 +74,6 @@ export function WeatherDropdown({
   const {midSvg, smallSvg, smallestSvg} = useSvgSizes();
 
   const onArrowClick = () => setIsExpanded(prev => !prev);
-
-  function a(){}
 
   const cardDictionary = [
     { title: "Feels like", value: `${feelsLike}°`, icon: <FeelsLike width={smallSvg} /> },

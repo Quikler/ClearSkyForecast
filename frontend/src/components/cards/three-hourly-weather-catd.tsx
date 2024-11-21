@@ -8,10 +8,10 @@ export default function ThreeHourlyWeatherCard({ day, weatherData }: ThreeHourly
   
   return (
     <Card border='1px solid indigo' shadow='0 0 5px gray' color='white' className="rounded-lg overflow-hidden">
-        <CardHeader textColor='white' className="bg-indigo-600">
+        <CardHeader textColor='white' className="bg-blue-600">
             <Heading fontSize={xlFontSize}>{day}</Heading>
         </CardHeader>
-        <CardBody className="bg-indigo-500">
+        <CardBody className="bg-blue-500">
           <Flex direction='column' gap={3}>
             {weatherData.map((weather, index) => (
               <WeatherDropdown key={index} {...weather} />

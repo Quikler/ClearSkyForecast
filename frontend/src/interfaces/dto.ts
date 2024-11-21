@@ -1,7 +1,4 @@
-import ThreeHourlyWeatherCard from "../components/cards/three-hourly-weather-catd";
-
 export interface TodayWeatherDTO {
-  topBar: TopBarDTO;
   shortWheather: ShortWeatherDTO;
   todayForecast: TodayForecastDTO[];
   detailedWeather: DetailedWeatherDTO;
@@ -11,8 +8,8 @@ export interface TopBarDTO {
   latitude: number;
   longitude: number;
   city: string;
-  region: string;
-  country: string;
+  state: string;
+  country_name: string;
 }
 
 export interface ShortWeatherDTO {

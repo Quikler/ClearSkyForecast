@@ -4,7 +4,7 @@ import { MenuDropdown } from "./shared/dropdowns";
 
 export default function Header() {
   return (
-    <header className='bg-indigo-600 border-2 border-indigo-500'>
+    <header className='bg-blue-600 border-2 border-blue-500'>
       <Flex className='lg:container mx-auto gap-2' alignItems='center' justifyContent='space-between'>
         <div>
           <svg fill="#000000" role="img" xmlns="http://www.w3.org/2000/svg" height="48px" width="96px" viewBox="0 0 60 32">
@@ -17,7 +17,7 @@ export default function Header() {
           </svg>
         </div>
         <div className='flex-grow' style={{ maxWidth: '780px' }}>
-          <MagnifierInput></MagnifierInput>
+          <MagnifierInput my={3} />
         </div>
         <Flex alignItems='center' justifyContent='space-between' gap='4'>
           <button className='bg-white rounded-md ps-4 pe-4 p-2 font-semibold'>

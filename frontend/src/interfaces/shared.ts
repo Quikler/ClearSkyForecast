@@ -19,3 +19,8 @@ export interface ThreeHourlyWeatherPair {
   day: string;
   weatherData: ThreeHourWeatherDTO[];
 }
+
+export interface TextWithIcon {
+  icon: JSX.Element,
+  title: string
+}

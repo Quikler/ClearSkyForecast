@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ThreeHourlyWeatherCard from "../cards/three-hourly-weather-catd";
 import { DayWeatherDictionary } from "../../interfaces/shared";
 import { Flex } from "@chakra-ui/react";
+import { fetchGeo } from "../../services/geolocation";
 
 export default function FiveDayThreeHour() {
   const [hourlyWeather, setHourlyWeather] = useState<DayWeatherDictionary>();
@@ -11,21 +12,25 @@ export default function FiveDayThreeHour() {
   }, []);
 
   const fetchData = async () => {
-    fetch(`https://localhost:7115/api/weather/hourly`)
+    fetchGeo()
+      .then(location => {
+        console.log("[LOCATION]:", location);
+        return fetch(`https://localhost:7115/api/weather/hourly?${new URLSearchParams(location)}`);
+      })
       .then(response => {
         if (response.ok) {
           return response.json();
         }
-        throw response;
-      }).then(data => {
-        console.log(data);
+        throw new Error(`HTTP error! status: ${response.status}`);
+      })
+      .then(data => {
+        console.log("Weather data:", data);
         setHourlyWeather(data);
-        //sendLocation(data.topBar);
-      }).catch(error => {
-        console.error("Error fetching api/weather/hourly data:", error);
+      })
+      .catch(error => {
+        console.error("Error:", error);
       });
   }
-
   
   return (
     <Flex direction='column' gap={3}>

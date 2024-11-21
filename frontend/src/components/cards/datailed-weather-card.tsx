@@ -1,5 +1,5 @@
 import { Card, CardBody, CardHeader, Divider, Flex, Grid, Heading, Text } from "@chakra-ui/react";
-import { Sunset, Sunrise } from "../svgr/weather-icons";
+import { Sunset, Sunrise } from "../svgr/openweather-icons";
 import { DetailedWeatherDTO } from "../../interfaces/dto";
 import { useFontSizes, useSvgSizes } from "../../hooks/breakpoints";
 
@@ -22,10 +22,10 @@ export default function DetailedWeatherCard({
 
   return (
     <Card border='1px solid indigo' shadow='2px 2px 5px gray' className="rounded-lg overflow-hidden">
-      <CardHeader textColor='white' className="bg-indigo-600">
+      <CardHeader textColor='white' className="bg-blue-600">
         <Heading fontSize={xlFontSize}>Weather Today in {city}, {country}</Heading>
       </CardHeader>
-      <CardBody className="bg-indigo-500">
+      <CardBody className="bg-blue-500">
         <Grid textColor='white' p={4} templateColumns='repeat(2, 1fr)' gridRowGap='3'>
             <Flex mr={4}>
               <Text fontWeight='bold' fontSize={fiveXlFontSize}>{feelsLike}°</Text>

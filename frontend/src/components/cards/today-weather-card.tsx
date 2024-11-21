@@ -1,5 +1,5 @@
 import { Card, CardBody, CardHeader, Divider, Flex, Grid, Heading, Text } from "@chakra-ui/react";
-import { WaterDrop } from "../svgr/general-icons";
+import { WaterDrop } from "../svgr/weather-icons";
 import { TodayForecastDTO } from "../../interfaces/dto";
 import React from "react";
 import { getOWSVGByName } from "../../services/image";
@@ -11,10 +11,10 @@ export default function TodayForecastCard({ forecasts }: { forecasts: TodayForec
   return (
     <>
       <Card textColor='white' border='1px solid indigo' shadow='2px 2px 5px gray' className="rounded-lg overflow-hidden" >
-        <CardHeader className="bg-indigo-600">
+        <CardHeader className="bg-blue-600">
           <Heading fontSize={xlFs}>Today's Forecast for Kryvyi Rih, Ukraine</Heading>
         </CardHeader>
-        <CardBody className="bg-indigo-500">
+        <CardBody className="bg-blue-500">
           <Grid p={4} templateColumns='repeat(4, 1fr)' gridColumnGap='3' justifyItems='center' alignItems='center' gridRowGap='3'>
             <Text fontWeight='bold'>Time of day</Text>
             <Text fontWeight='bold'>Degree</Text>

@@ -1,5 +1,5 @@
 import { SVGProps } from "react";
-import { ClearSky, Clouds, FewClouds, Mist, Rain, Snow, SunnyRain, YellowPC, Thunderstorm } from "../components/svgr/weather-icons";
+import { ClearSky, Clouds, FewClouds, Mist, Rain, Snow, SunnyRain, YellowPC, Thunderstorm } from "../components/svgr/openweather-icons";
 import { PrimaryColor } from "../interfaces/shared";
 
 
