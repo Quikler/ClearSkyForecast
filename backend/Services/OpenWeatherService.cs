@@ -13,7 +13,7 @@ public class OpenWeatherService : IOpenWeatherService
         _httpClientFactory = httpClientFactory;
     }
 
-    public async Task<CurrentWeatherResponse?> GetCurrentAsync(float latitude, float longitude, string token)
+    public async Task<CurrentWeatherResponse?> GetCurrentAsync(double latitude, double longitude, string token)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(token, nameof(token));
 
@@ -24,7 +24,7 @@ public class OpenWeatherService : IOpenWeatherService
         return await response.Content.ReadFromJsonAsync<CurrentWeatherResponse>();
     }
 
-    public async Task<FiveDayResponse?> GetFiveDayThreeHourAsync(float latitude, float longitude, string token, int count = 40)
+    public async Task<FiveDayResponse?> GetFiveDayThreeHourAsync(double latitude, double longitude, string token, int count = 40)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(token, nameof(token));
 

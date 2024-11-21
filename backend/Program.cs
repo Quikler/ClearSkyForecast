@@ -20,7 +20,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddSingleton<IIpInfoService, IpInfoService>();
 builder.Services.AddSingleton<IOpenWeatherService, OpenWeatherService>();
 
 builder.Services.AddSwaggerGen(c =>

@@ -1,6 +1,7 @@
 using System.Globalization;
 using Backend.DTOs;
 using Backend.DTOs.Factories;
+using Backend.JSON.RequestModels;
 using Backend.JSON.ResponseModels;
 using Backend.Services.Interfaces;
 using Backend.Utils.Extensions;
@@ -15,41 +16,20 @@ public class WeatherController : ControllerBase
     private readonly IHttpClientFactory _httpClientFactory;
     private readonly IConfiguration _configuration;
     private readonly IOpenWeatherService _openWeatherService;
-    private readonly IIpInfoService _ipInfoService;
 
     public string OpenWeatherToken => _configuration["OPENWEATHER:TOKEN"]!;
 
     public WeatherController(IHttpClientFactory httpClientFactory, IConfiguration configuration,
-        IOpenWeatherService openWeatherService, IIpInfoService ipInfoService)
+        IOpenWeatherService openWeatherService)
     {
         _httpClientFactory = httpClientFactory;
         _configuration = configuration;
         _openWeatherService = openWeatherService;
-        _ipInfoService = ipInfoService;
     }
 
     [HttpGet]
-    public async Task<IActionResult> Current(float lat, float lon)
+    public async Task<IActionResult> Today([FromQuery] GeoResponse ip)
     {
-        try
-        {
-            var response = await _openWeatherService.GetCurrentAsync(lat, lon, _configuration["OPENWEATHER:TOKEN"]!);
-            return Ok(new { response });
-        }
-        catch (HttpRequestException ex)
-        {
-            return Problem("Error fetching weather data: " + ex.Message);
-        }
-        catch (Exception ex)
-        {
-            return Problem("An unexpected error occurred: " + ex.Message);
-        }
-    }
-
-    [HttpGet]
-    public async Task<IActionResult> Today()
-    {
-        var ip = await _ipInfoService.GetIpAsync(_configuration["IPINFO:TOKEN"]!);
         var weather = await _openWeatherService.GetCurrentAsync(ip.Latitude, ip.Longitude, OpenWeatherToken);
         var fiveDayThreeHour = await _openWeatherService.GetFiveDayThreeHourAsync(ip.Latitude, ip.Longitude, OpenWeatherToken, 10);
 
@@ -69,15 +49,15 @@ public class WeatherController : ControllerBase
             TopBar = new TopBarDTO
             {
                 City = ip.City,
-                Country = ip.Country,
-                Region = ip.Region,
+                Country = ip.CountryName,
+                Region = ip.State,
                 Latitude = ip.Latitude,
                 Longitude = ip.Longitude,
             },
             ShortWheather = new ShortWeatherDTO
             {
                 City = ip.City,
-                Region = ip.Region,
+                Region = ip.State,
                 CurrentTemp = weather.Main.Temp.EvaluateKelvin(),
                 CloudState = weather.Weather[0].Description,
                 MaxTemp = temps.Max().EvaluateKelvin(),
@@ -98,7 +78,7 @@ public class WeatherController : ControllerBase
                 Visibility = weather.Visibility.ToString(),
                 Wind = weather.Wind.Speed,
                 City = ip.City,
-                Country = ip.Country,
+                Country = ip.CountryName,
             },
         };
 
@@ -106,9 +86,8 @@ public class WeatherController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Hourly()
+    public async Task<IActionResult> Hourly([FromQuery] GeoResponse ip)
     {
-        var ip = await _ipInfoService.GetIpAsync(_configuration["IPINFO:TOKEN"]!);
         if (ip is null) 
         {
             return Problem("IP address could not be retrieved.");
