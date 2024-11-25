@@ -23,3 +23,22 @@ export function fetchGeo(callbackName = "callback"): Promise<any> {
     document.body.appendChild(script);
   });
 }
+
+export function fetchGeoAndApi(apiUrl: string) {
+  return fetchGeo()
+    .then(location => {
+      console.log("[LOCATION]:", location);
+      const urlWithParams = `${apiUrl}?${new URLSearchParams(location)}`;
+      return fetch(urlWithParams);
+    })
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+      throw new Error(`HTTP error! status: ${response.status}`);
+    })
+    .catch(error => {
+      console.error("Error fetching weather data:", error);
+      throw error; // Rethrow to handle it elsewhere if needed
+    });
+}

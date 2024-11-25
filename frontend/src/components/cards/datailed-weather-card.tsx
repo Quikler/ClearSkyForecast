@@ -18,10 +18,10 @@ export default function DetailedWeatherCard({
 }: DetailedWeatherDTO) {
 
   const { fiveXlFs: fiveXlFontSize, xlFs: xlFontSize } = useFontSizes();
-  const { bigSvg } = useSvgSizes();
+  const { xlSvg: bigSvg } = useSvgSizes();
 
   return (
-    <Card border='1px solid indigo' shadow='2px 2px 5px gray' className="rounded-lg overflow-hidden">
+    <Card border='1px solid indigo' className="rounded-lg overflow-hidden">
       <CardHeader textColor='white' className="bg-blue-600">
         <Heading fontSize={xlFontSize}>Weather Today in {city}, {country}</Heading>
       </CardHeader>

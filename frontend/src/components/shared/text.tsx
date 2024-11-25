@@ -1,14 +1,22 @@
 import { ChakraComponent, Flex, FlexProps, Text } from "@chakra-ui/react";
-import { ElementType } from "react";
+import { ElementType, JSX } from "react";
 
-interface TextWithIcon {
-  icon: JSX.Element,
-  title: string
+interface TextWithIconProps {
+  icon: JSX.Element;
+  title: string;
+  isTitleVisible?: boolean;
+  isIconVisible?: boolean;
 }
 
-export const TextWithIcon: ChakraComponent<ElementType, FlexProps & TextWithIcon> = ({ icon, title, props }) => (
-  <Flex {...props} alignItems="center" gap={3}>
-    {icon}
-    <Text>{title}</Text>
+export const TextWithIcon: ChakraComponent<ElementType, FlexProps & TextWithIconProps> = ({
+  icon,
+  title,
+  isTitleVisible: isTextVisible = true,
+  isIconVisible = true,
+  ...rest
+}) => (
+  <Flex alignItems="center" gap={3} {...rest}>
+    {isIconVisible && icon}
+    {isTextVisible && <Text>{title}</Text>}
   </Flex>
 );

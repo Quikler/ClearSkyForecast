@@ -9,12 +9,19 @@ export default function App() {
   
   return (
     <BrowserRouter>
-      <Flex>
-        <SidePanel />
-        <Box flexGrow={1}>
-          <Header></Header>
-          <MainPanel></MainPanel>
-        </Box>
+      <Flex direction="column" minHeight="100vh">
+        <Flex flexGrow={1}>
+          <SidePanel />
+          <Box flexGrow={1}>
+            <Header />
+            <MainPanel />
+          </Box>
+        </Flex>
+        <footer style={{ backgroundColor: "red", textAlign: "center", padding: "10px" }}>
+          <Box>
+            footer
+          </Box>
+        </footer>
       </Flex>
     </BrowserRouter>
   )

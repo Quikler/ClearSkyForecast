@@ -7,7 +7,7 @@ export default function ThreeHourlyWeatherCard({ day, weatherData }: ThreeHourly
   const { xlFs: xlFontSize } = useFontSizes();
   
   return (
-    <Card border='1px solid indigo' shadow='0 0 5px gray' color='white' className="rounded-lg overflow-hidden">
+    <Card border='1px solid indigo' color='white' className="rounded-lg overflow-hidden">
         <CardHeader textColor='white' className="bg-blue-600">
             <Heading fontSize={xlFontSize}>{day}</Heading>
         </CardHeader>

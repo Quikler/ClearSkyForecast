@@ -71,7 +71,7 @@ export function WeatherDropdown({
   pressure,
 }: ThreeHourWeatherDTO) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const {midSvg, smallSvg, smallestSvg} = useSvgSizes();
+  const {lgSvg: midSvg, smSvg: smallSvg, smllstSvg: smallestSvg} = useSvgSizes();
 
   const onArrowClick = () => setIsExpanded(prev => !prev);
 

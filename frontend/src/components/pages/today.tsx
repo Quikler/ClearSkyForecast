@@ -4,6 +4,7 @@ import { TodayWeatherDTO } from "../../interfaces/dto";
 import ShortWeatherCard from "../cards/short-weather-card";
 import TodayForecastCard from "../cards/today-weather-card";
 import DetailedWeatherCard from "../cards/datailed-weather-card";
+import { fetchGeoAndApi } from "../../services/geolocation";
 
 export default function Today() {
   const [todayWeather, setTodayWeather] = useState<TodayWeatherDTO>();
@@ -13,13 +14,8 @@ export default function Today() {
   }, []);
 
   const getCurrentWeather = async () => {
-    fetch(`https://localhost:7115/api/weather/today`)
-      .then(response => {
-        if (response.ok) {
-          return response.json();
-        }
-        throw response;
-      }).then(data => {
+    fetchGeoAndApi('https://localhost:7115/api/weather/today')
+      .then(data => {
         console.log(data);
         setTodayWeather(data);
       }).catch(error => {
@@ -28,7 +24,7 @@ export default function Today() {
   }
 
   return (
-    <Grid gap="8" justifyContent="space-between" gridTemplateColumns={{ base: '1fr', lg: '3fr 2fr' }}>
+    <Grid gap="8" justifyContent="space-between" gridTemplateColumns={{ base: '1fr', xl: '3fr 2fr' }}>
       <Flex direction="column" gap="8">
         {todayWeather ? (
           <>

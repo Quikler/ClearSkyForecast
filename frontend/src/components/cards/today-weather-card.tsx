@@ -3,14 +3,15 @@ import { WaterDrop } from "../svgr/weather-icons";
 import { TodayForecastDTO } from "../../interfaces/dto";
 import React from "react";
 import { getOWSVGByName } from "../../services/image";
-import { useFontSizes } from "../../hooks/breakpoints";
+import { useFontSizes, useSvgSizes } from "../../hooks/breakpoints";
 
 export default function TodayForecastCard({ forecasts }: { forecasts: TodayForecastDTO[] }) {
   const { xlFs } = useFontSizes();
+  const { mdSvg } = useSvgSizes();
   
   return (
     <>
-      <Card textColor='white' border='1px solid indigo' shadow='2px 2px 5px gray' className="rounded-lg overflow-hidden" >
+      <Card textColor='white' border='1px solid indigo' className="rounded-lg overflow-hidden" >
         <CardHeader className="bg-blue-600">
           <Heading fontSize={xlFs}>Today's Forecast for Kryvyi Rih, Ukraine</Heading>
         </CardHeader>
@@ -35,7 +36,7 @@ export default function TodayForecastCard({ forecasts }: { forecasts: TodayForec
                   fontSize={forecast.isCurrent ? xlFs : undefined}>{forecast.temp}°</Text>
                 {getOWSVGByName(forecast.icon, { width: "48px" })}
                 <Flex gap="1" alignItems='center'>
-                  <WaterDrop />
+                  <WaterDrop width={mdSvg} />
                   <Text 
                     fontWeight={forecast.isCurrent ? 'bold' : undefined} 
                     fontSize={forecast.isCurrent ? xlFs : undefined}>{forecast.precipitation}%</Text>
